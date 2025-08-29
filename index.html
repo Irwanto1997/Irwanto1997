@@ -315,4 +315,288 @@
             }
             
             .mining-status, .stats {
-                grid-template
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="doge-icon">🐕</div>
+            <h1>Simulator Mining Dogecoin</h1>
+            <p class="subtitle">Dapatkan 0.005 DOGE setiap detik!</p>
+        </header>
+        
+        <div class="wallet-section">
+            <div class="wallet-form">
+                <div class="input-group">
+                    <label for="walletAddress">Alamat Wallet Dogecoin</label>
+                    <input type="text" id="walletAddress" placeholder="Masukkan alamat wallet DOGE Anda" />
+                </div>
+            </div>
+        </div>
+        
+        <div class="mining-status">
+            <div class="status-item">
+                <div class="status-label">Status Mining</div>
+                <div class="status-value" id="status">Tidak Aktif</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">DOGE per Detik</div>
+                <div class="status-value">0.005</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Total DOGE</div>
+                <div class="status-value" id="mined">0.00000000</div>
+            </div>
+        </div>
+        
+        <div class="mining-box">
+            <h2>Proses Mining Dogecoin</h2>
+            <div class="hash-display" id="hashDisplay">Klik "Mulai Mining" untuk memulai...</div>
+            
+            <div class="mining-animation" id="miningAnimation">
+                <div class="shiba">🐕</div>
+            </div>
+            
+            <div class="controls">
+                <button id="startButton">
+                    <span>▶</span> Mulai Mining
+                </button>
+                <button id="stopButton" disabled>
+                    <span>⏹</span> Berhenti
+                </button>
+                <button id="resetButton">
+                    <span>↺</span> Reset
+                </button>
+                <button id="withdrawButton">
+                    <span>💰</span> Tarik DOGE
+                </button>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-title">Hash Rate</div>
+                <div class="stat-value" id="hashRate">0 H/s</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Total Hash</div>
+                <div class="stat-value" id="totalHashes">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Waktu Mining</div>
+                <div class="stat-value" id="miningTime">00:00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State aplikasi
+        const state = {
+            mining: false,
+            hashCount: 0,
+            minedDOGE: 0,
+            startTime: null,
+            miningInterval: null,
+            animationInterval: null,
+            miningTime: 0
+        };
+
+        // Elemen DOM
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const resetButton = document.getElementById('resetButton');
+        const withdrawButton = document.getElementById('withdrawButton');
+        const hashDisplay = document.getElementById('hashDisplay');
+        const statusDisplay = document.getElementById('status');
+        const minedDisplay = document.getElementById('mined');
+        const hashRateDisplay = document.getElementById('hashRate');
+        const totalHashesDisplay = document.getElementById('totalHashes');
+        const miningTimeDisplay = document.getElementById('miningTime');
+        const walletAddressInput = document.getElementById('walletAddress');
+        const miningAnimation = document.getElementById('miningAnimation');
+
+        // Nilai DOGE per detik
+        const DOGE_PER_SECOND = 0.005;
+
+        // Fungsi untuk menghasilkan hash acak (simulasi)
+        function generateRandomHash() {
+            const characters = '0123456789abcdef';
+            let hash = '';
+            for (let i = 0; i < 64; i++) {
+                hash += characters[Math.floor(Math.random() * 16)];
+            }
+            return hash;
+        }
+
+        // Fungsi untuk membuat animasi angka
+        function createCounterAnimation() {
+            const counter = document.createElement('div');
+            counter.className = 'counter-animation';
+            counter.textContent = '+0.005 DOGE';
+            miningAnimation.appendChild(counter);
+            
+            // Hapus elemen setelah animasi selesai
+            setTimeout(() => {
+                miningAnimation.removeChild(counter);
+            }, 1000);
+        }
+
+        // Fungsi untuk membuat animasi koin
+        function createCoinAnimation() {
+            const coin = document.createElement('div');
+            coin.className = 'doge-coins';
+            coin.textContent = 'Ð';
+            coin.style.left = `${Math.random() * 90 + 5}%`;
+            coin.style.animationDelay = `${Math.random() * 2}s`;
+            miningAnimation.appendChild(coin);
+            
+            // Hapus elemen setelah animasi selesai
+            setTimeout(() => {
+                if (miningAnimation.contains(coin)) {
+                    miningAnimation.removeChild(coin);
+                }
+            }, 3000);
+        }
+
+        // Fungsi untuk memperbarui UI
+        function updateUI() {
+            totalHashesDisplay.textContent = state.hashCount.toLocaleString();
+            minedDisplay.textContent = state.minedDOGE.toFixed(8);
+            
+            // Hitung hash rate
+            if (state.startTime && state.mining) {
+                const elapsedTime = (Date.now() - state.startTime) / 1000;
+                const hashRate = Math.floor(state.hashCount / elapsedTime);
+                hashRateDisplay.textContent = `${hashRate.toLocaleString()} H/s`;
+            }
+            
+            // Perbarui waktu mining
+            if (state.mining) {
+                state.miningTime += 1;
+                const hours = Math.floor(state.miningTime / 3600);
+                const minutes = Math.floor((state.miningTime % 3600) / 60);
+                const seconds = state.miningTime % 60;
+                miningTimeDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Fungsi untuk memulai mining
+        function startMining() {
+            if (state.mining) return;
+            
+            // Validasi wallet address
+            if (!walletAddressInput.value.trim()) {
+                alert('Masukkan alamat wallet Dogecoin Anda terlebih dahulu!');
+                return;
+            }
+            
+            state.mining = true;
+            state.startTime = Date.now();
+            startButton.disabled = true;
+            stopButton.disabled = false;
+            statusDisplay.textContent = 'Mining...';
+            statusDisplay.style.color = '#cb9800';
+            
+            // Mulai animasi
+            createCoinAnimation();
+            const shiba = document.querySelector('.shiba');
+            shiba.style.animationPlayState = 'running';
+            
+            // Animasi koin
+            state.animationInterval = setInterval(() => {
+                createCoinAnimation();
+            }, 300);
+            
+            // Proses mining
+            state.miningInterval = setInterval(() => {
+                const hash = generateRandomHash();
+                state.hashCount++;
+                
+                hashDisplay.textContent = hash;
+                
+                // Tambah DOGE setiap detik
+                if (state.hashCount % 100 === 0) {
+                    state.minedDOGE += DOGE_PER_SECOND;
+                    minedDisplay.classList.add('value-change');
+                    setTimeout(() => minedDisplay.classList.remove('value-change'), 500);
+                    
+                    // Tampilkan animasi angka
+                    createCounterAnimation();
+                }
+                
+                updateUI();
+            }, 10);
+        }
+
+        // Fungsi untuk menghentikan mining
+        function stopMining() {
+            state.mining = false;
+            clearInterval(state.miningInterval);
+            clearInterval(state.animationInterval);
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            statusDisplay.textContent = 'Ditangguhkan';
+            statusDisplay.style.color = '#e6c34c';
+            
+            // Hentikan animasi
+            const shiba = document.querySelector('.shiba');
+            shiba.style.animationPlayState = 'paused';
+        }
+
+        // Fungsi untuk mereset state
+        function resetMining() {
+            stopMining();
+            state.hashCount = 0;
+            state.minedDOGE = 0;
+            state.miningTime = 0;
+            hashDisplay.textContent = 'Klik "Mulai Mining" untuk memulai...';
+            hashDisplay.style.color = '#cb9800';
+            
+            // Reset UI
+            statusDisplay.textContent = 'Tidak Aktif';
+            statusDisplay.style.color = '#e6c34c';
+            hashRateDisplay.textContent = '0 H/s';
+            miningTimeDisplay.textContent = '00:00:00';
+            updateUI();
+        }
+
+        // Fungsi untuk menarik DOGE
+        function withdrawDOGE() {
+            if (state.minedDOGE <= 0) {
+                alert('Anda belum memiliki DOGE untuk ditarik!');
+                return;
+            }
+            
+            if (!walletAddressInput.value.trim()) {
+                alert('Masukkan alamat wallet Dogecoin Anda terlebih dahulu!');
+                return;
+            }
+            
+            alert(`🎉 Berhasil menarik ${state.minedDOGE.toFixed(8)} DOGE ke alamat: ${walletAddressInput.value}`);
+            state.minedDOGE = 0;
+            updateUI();
+        }
+
+        // Event listeners
+        startButton.addEventListener('click', startMining);
+        stopButton.addEventListener('click', stopMining);
+        resetButton.addEventListener('click', resetMining);
+        withdrawButton.addEventListener('click', withdrawDOGE);
+
+        // Inisialisasi
+        updateUI();
+    </script>
+</body>
+</html>
