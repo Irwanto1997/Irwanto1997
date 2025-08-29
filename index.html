@@ -1,27 +1,459 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Web Keren 🚀</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #1e3c72, #2a5298);
-      color: white;
-      text-align: center;
-      padding: 50px;
-    }
-    h1 {
-      font-size: 48px;
-    }
-    p {
-      font-size: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulator Mining Bitcoin</title>
+    <style>
+        :root {
+            --primary-color: #f2a900;
+            --secondary-color: #12100e;
+            --accent-color: #ffd700;
+            --text-color: #f9f9f9;
+            --background-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--background-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(18, 16, 14, 0.85);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--primary-color);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(242, 169, 0, 0.5);
+        }
+        
+        .subtitle {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+        
+        .mining-status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(242, 169, 0, 0.3);
+        }
+        
+        .status-item {
+            text-align: center;
+        }
+        
+        .status-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .mining-box {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(242, 169, 0, 0.3);
+            text-align: center;
+        }
+        
+        .hash-display {
+            font-family: monospace;
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow-x: auto;
+            text-align: left;
+            min-height: 80px;
+            border: 1px solid #333;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(242, 169, 0, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .mining-animation {
+            width: 100%;
+            height: 100px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            margin: 20px 0;
+        }
+        
+        .miner {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" fill="%23f2a900" /><circle cx="50" cy="50" r="15" fill="%2312100e" /></svg>') no-repeat center;
+            background-size: contain;
+            top: 25px;
+            left: -50px;
+            transition: left 0.5s linear;
+        }
+        
+        .blocks {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .block {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #f2a900, #ffd700);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--secondary-color);
+            font-weight: bold;
+            opacity: 0.7;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(242, 169, 0, 0.2);
+        }
+        
+        .stat-title {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .bitcoin-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Selamat datang di Web Keren!</h1>
-  <p>Website ini dihosting gratis pakai GitHub Pages 🎉</p>
-  <p>Edit <code>index.html</code> untuk update isi web.</p>
+    <div class="container">
+        <header>
+            <h1>Simulator Mining Bitcoin</h1>
+            <p class="subtitle">Simulasi penambangan Bitcoin dengan proof-of-work</p>
+        </header>
+        
+        <div class="mining-status">
+            <div class="status-item">
+                <div class="status-label">Status</div>
+                <div class="status-value" id="status">Tidak Aktif</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Kesulitan</div>
+                <div class="status-value" id="difficulty">4</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">BTC Ditambang</div>
+                <div class="status-value" id="mined">0.00000000</div>
+            </div>
+        </div>
+        
+        <div class="mining-box">
+            <h2>Proses Hashing</h2>
+            <div class="hash-display" id="hashDisplay">Menunggu untuk memulai...</div>
+            
+            <div class="mining-animation">
+                <div class="miner" id="miner"></div>
+                <div class="blocks">
+                    <div class="block">₿</div>
+                    <div class="block">₿</div>
+                    <div class="block">₿</div>
+                    <div class="block">₿</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="startButton">
+                    <span class="bitcoin-icon">▶</span> Mulai Mining
+                </button>
+                <button id="stopButton" disabled>
+                    <span class="bitcoin-icon">⏹</span> Berhenti
+                </button>
+                <button id="resetButton">
+                    <span class="bitcoin-icon">↺</span> Reset
+                </button>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-title">Hash Rate</div>
+                <div class="stat-value" id="hashRate">0 H/s</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Total Hash</div>
+                <div class="stat-value" id="totalHashes">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Block Ditemukan</div>
+                <div class="stat-value" id="blocksFound">0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State aplikasi
+        const state = {
+            mining: false,
+            hashCount: 0,
+            blocksFound: 0,
+            minedBTC: 0,
+            startTime: null,
+            animationFrame: null,
+            minerPosition: -50
+        };
+
+        // Elemen DOM
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const resetButton = document.getElementById('resetButton');
+        const hashDisplay = document.getElementById('hashDisplay');
+        const statusDisplay = document.getElementById('status');
+        const minedDisplay = document.getElementById('mined');
+        const hashRateDisplay = document.getElementById('hashRate');
+        const totalHashesDisplay = document.getElementById('totalHashes');
+        const blocksFoundDisplay = document.getElementById('blocksFound');
+        const minerElement = document.getElementById('miner');
+        const difficultyDisplay = document.getElementById('difficulty');
+
+        // Nilai kesulitan (jumlah nol di awal hash)
+        const difficulty = parseInt(difficultyDisplay.textContent);
+        
+        // Fungsi untuk menghasilkan hash acak (simulasi)
+        function generateRandomHash() {
+            const characters = '0123456789abcdef';
+            let hash = '';
+            for (let i = 0; i < 64; i++) {
+                hash += characters[Math.floor(Math.random() * 16)];
+            }
+            return hash;
+        }
+
+        // Fungsi untuk memeriksa apakah hash memenuhi syarat kesulitan
+        function meetsDifficulty(hash, difficulty) {
+            return hash.startsWith('0'.repeat(difficulty));
+        }
+
+        // Fungsi untuk memperbarui UI
+        function updateUI() {
+            totalHashesDisplay.textContent = state.hashCount.toLocaleString();
+            blocksFoundDisplay.textContent = state.blocksFound;
+            minedDisplay.textContent = state.minedBTC.toFixed(8);
+            
+            // Hitung hash rate
+            if (state.startTime && state.mining) {
+                const elapsedTime = (Date.now() - state.startTime) / 1000; // dalam detik
+                const hashRate = Math.floor(state.hashCount / elapsedTime);
+                hashRateDisplay.textContent = `${hashRate.toLocaleString()} H/s`;
+            }
+        }
+
+        // Fungsi untuk memulai mining
+        function startMining() {
+            if (state.mining) return;
+            
+            state.mining = true;
+            state.startTime = Date.now();
+            startButton.disabled = true;
+            stopButton.disabled = false;
+            statusDisplay.textContent = 'Mining...';
+            statusDisplay.style.color = '#0f0';
+            
+            // Animasi miner
+            function animateMiner() {
+                if (!state.mining) return;
+                
+                state.minerPosition += 2;
+                if (state.minerPosition > 800) state.minerPosition = -50;
+                minerElement.style.left = `${state.minerPosition}px`;
+                
+                state.animationFrame = requestAnimationFrame(animateMiner);
+            }
+            
+            animateMiner();
+            
+            // Proses mining
+            function mine() {
+                if (!state.mining) return;
+                
+                const hash = generateRandomHash();
+                state.hashCount++;
+                
+                hashDisplay.textContent = hash;
+                
+                if (meetsDifficulty(hash, difficulty)) {
+                    // Block ditemukan!
+                    state.blocksFound++;
+                    state.minedBTC += 0.00000001; // Sangat kecil, seperti mining sungguhan
+                    
+                    hashDisplay.textContent = `BLOCK DITEMUKAN! ${hash}`;
+                    hashDisplay.style.color = '#ff0';
+                    
+                    setTimeout(() => {
+                        hashDisplay.style.color = '#0f0';
+                    }, 1000);
+                }
+                
+                updateUI();
+                
+                // Gunakan setTimeout daripada setInterval untuk menghindari penumpukan
+                setTimeout(mine, 10);
+            }
+            
+            mine();
+        }
+
+        // Fungsi untuk menghentikan mining
+        function stopMining() {
+            state.mining = false;
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            statusDisplay.textContent = 'Tidak Aktif';
+            statusDisplay.style.color = '#ffd700';
+            
+            if (state.animationFrame) {
+                cancelAnimationFrame(state.animationFrame);
+            }
+        }
+
+        // Fungsi untuk mereset state
+        function resetMining() {
+            stopMining();
+            state.hashCount = 0;
+            state.blocksFound = 0;
+            state.minedBTC = 0;
+            state.minerPosition = -50;
+            minerElement.style.left = `${state.minerPosition}px`;
+            hashDisplay.textContent = 'Menunggu untuk memulai...';
+            hashDisplay.style.color = '#0f0';
+            updateUI();
+        }
+
+        // Event listeners
+        startButton.addEventListener('click', startMining);
+        stopButton.addEventListener('click', stopMining);
+        resetButton.addEventListener('click', resetMining);
+
+        // Inisialisasi
+        updateUI();
+    </script>
 </body>
 </html>
