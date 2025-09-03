@@ -1,272 +1,124 @@
-import React, { useState, useMemo } from 'react'; import { motion, AnimatePresence } from 'framer-motion'; import { Github, Mail, Code, Phone, Menu, X, Search } from 'lucide-react';
-
-// NOTE: This is a single-file React component meant to be used in a Tailwind + React environment. // It uses Framer Motion for animations and lucide-react for icons. // If you use shadcn/ui components in your project, feel free to swap the simple elements below for Card/Button/etc.
-
-const LANGUAGES = [ 'JavaScript', 'TypeScript', 'Python', 'Java', 'Go', 'Rust', 'C#', 'PHP', 'Ruby', 'Swift', 'Kotlin', 'C++', 'HTML/CSS', 'SQL' ];
-
-const SAMPLE_PROJECTS = [ { id: 1, title: 'Realtime Trading Bot (Python)', lang: ['Python'], tags: ['Automation', 'Trading', 'Telegram Bot'], description: 'Triangular arbitrage bot with Telegram alerts, modular strategy engine, and risk controls. Deployable on Termux or VPS.', url: '#', github: '#' }, { id: 2, title: 'Progressive Web App - Marketplace (React+TS)', lang: ['TypeScript', 'JavaScript', 'HTML/CSS'], tags: ['PWA', 'E-commerce', 'Payments'], description: 'Fast PWA with offline sync, Stripe integration, and admin dashboard. Unit & integration tests included.', url: '#', github: '#' }, { id: 3, title: 'Mobile App - Finance Tracker (Kotlin/Swift)', lang: ['Kotlin', 'Swift'], tags: ['Mobile', 'Finance'], description: 'Native mobile apps with secure auth, local encrypted DB, and push notifications.', url: '#', github: '#' }, { id: 4, title: 'High-performance API (Go)', lang: ['Go'], tags: ['API', 'Microservices'], description: 'Low-latency REST API with gRPC support, automated CI/CD, and observability (Prometheus, Grafana).', url: '#', github: '#' } ];
-
-export default function PersonalDevPortfolio() { const [query, setQuery] = useState(''); const [selectedLang, setSelectedLang] = useState('All'); const [showMobileMenu, setShowMobileMenu] = useState(false); const [sortBy, setSortBy] = useState('Newest'); const [selectedProject, setSelectedProject] = useState(null);
-
-const languagesWithAll = useMemo(() => ['All', ...LANGUAGES], []);
-
-const filteredProjects = useMemo(() => { const q = query.trim().toLowerCase(); let list = SAMPLE_PROJECTS.filter(p => { const matchQuery = !q || p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) || p.tags.join(' ').toLowerCase().includes(q); const matchLang = selectedLang === 'All' || p.lang.includes(selectedLang); return matchQuery && matchLang; });
-
-if (sortBy === 'Newest') list = list.sort((a,b)=>b.id-a.id);
-if (sortBy === 'Oldest') list = list.sort((a,b)=>a.id-b.id);
-if (sortBy === 'A-Z') list = list.sort((a,b)=>a.title.localeCompare(b.title));
-
-return list;
-
-}, [query, selectedLang, sortBy]);
-
-return ( <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100"> <header className="max-w-6xl mx-auto p-4 flex items-center justify-between"> <div className="flex items-center gap-3"> <div className="bg-gradient-to-r from-indigo-600 to-cyan-400 text-white px-3 py-2 rounded-2xl font-semibold shadow-lg">GLADIATOR DEV</div> <nav className="hidden md:flex gap-6 items-center text-sm"> <a href="#services" className="hover:underline">Services</a> <a href="#projects" className="hover:underline">Portfolio</a> <a href="#pricing" className="hover:underline">Pricing</a> <a href="#contact" className="hover:underline">Contact</a> </nav> </div>
-
-<div className="flex items-center gap-3">
-      <a href="mailto:youremail@example.com" className="hidden sm:inline-flex items-center gap-2 border p-2 rounded-2xl text-sm"> <Mail size={16}/> Hire me</a>
-      <button className="p-2 md:hidden" onClick={()=>setShowMobileMenu(v=>!v)} aria-label="menu">
-        {showMobileMenu ? <X /> : <Menu />}
-      </button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Irwanto | Fullstack Developer</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #fff; line-height: 1.6; }
+    /* Navbar */
+    .navbar { display: flex; justify-content: space-between; padding: 1rem 2rem; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); position: sticky; top: 0; }
+    .nav-links { list-style: none; display: flex; gap: 1.5rem; }
+    .nav-links a { color: #fff; text-decoration: none; font-weight: 600; }
+    .nav-links a:hover { color: #ffeb3b; }
+    /* Hero */
+    .hero { text-align: center; padding: 5rem 2rem; }
+    .hero h1 { font-size: 2.5rem; }
+    .hero p { margin: 1rem 0; }
+    .btn { display: inline-block; padding: 0.7rem 1.5rem; background: #ff4081; border-radius: 30px; color: #fff; text-decoration: none; transition: 0.3s; }
+    .btn:hover { background: #f50057; }
+    /* Sections */
+    section { padding: 4rem 2rem; text-align: center; }
+    h2 { font-size: 2rem; margin-bottom: 2rem; }
+    /* Cards */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 1.5rem; }
+    .card { background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 15px; transition: transform 0.3s, background 0.3s; }
+    .card:hover { transform: translateY(-8px); background: rgba(255,255,255,0.2); }
+    /* Stats */
+    .stats-container { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+    .stat { font-size: 1.5rem; background: rgba(0,0,0,0.3); padding: 1rem 2rem; border-radius: 15px; }
+    /* Footer */
+    footer { text-align: center; padding: 1rem; background: rgba(0,0,0,0.4); margin-top: 3rem; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">⚡ Irwanto.dev</div>
+      <ul class="nav-links">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="hero">
+      <h1>💻 Fullstack Developer</h1>
+      <p>I build modern websites, bots, and apps with premium quality 🚀</p>
+      <a href="#contact" class="btn">Hire Me</a>
     </div>
   </header>
 
-  <AnimatePresence>
-    {showMobileMenu && (
-      <motion.div initial={{opacity:0, y:-10}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="md:hidden bg-white dark:bg-slate-800 shadow-md">
-        <div className="p-4 flex flex-col gap-3">
-          <a href="#services">Services</a>
-          <a href="#projects">Portfolio</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#contact">Contact</a>
-        </div>
-      </motion.div>
-    )}
-  </AnimatePresence>
+  <!-- Services -->
+  <section id="services">
+    <h2>🚀 My Services</h2>
+    <div class="cards">
+      <div class="card">Web Development 🌐</div>
+      <div class="card">Bot & Automation 🤖</div>
+      <div class="card">Mobile Apps 📱</div>
+      <div class="card">Database & API ⚡</div>
+    </div>
+  </section>
 
-  {/* Hero */}
-  <main className="max-w-6xl mx-auto px-4 py-12">
-    <section className="grid md:grid-cols-2 gap-8 items-center">
-      <motion.div initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} transition={{delay:0.1}}>
-        <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-          Programmer Freelance — <span className="text-indigo-600">Solusi Cepat, Kode Rapi</span>
-        </h1>
-        <p className="mt-4 text-slate-600 dark:text-slate-300 max-w-xl">Saya membantu startup & bisnis mengotomasi tugas, membangun aplikasi web/mobile, dan men-deploy sistem produksi yang aman & terukur. Spesialis: automation, backend, mobile, dan integrasi API.</p>
-
-        <div className="mt-6 flex gap-3">
-          <a href="#contact" className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-2xl shadow hover:scale-[1.02]">Hire me</a>
-          <a href="#projects" className="inline-flex items-center gap-2 border px-4 py-2 rounded-2xl">Lihat Portfolio</a>
-        </div>
-
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {['Fast Delivery','Clean Code','Support','NDA'].map((b,i)=> (
-            <div key={i} className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm text-center text-sm">{b}</div>
-          ))}
-        </div>
-      </motion.div>
-
-      <motion.div initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} className="relative">
-        <div className="rounded-2xl p-6 bg-gradient-to-br from-white to-slate-100 dark:from-slate-800 dark:to-slate-900 shadow-2xl">
-          <div className="grid grid-cols-3 gap-4">
-            {LANGUAGES.slice(0,9).map((l,i)=> (
-              <div key={i} className="p-4 bg-white dark:bg-slate-700 rounded-xl text-center">{l}</div>
-            ))}
-          </div>
-
-          <div className="mt-6 bg-white dark:bg-slate-800 p-4 rounded-xl">
-            <h4 className="text-sm font-semibold">Quick Contact</h4>
-            <p className="text-xs text-slate-500">Available for remote & on-site (Jakarta). Response within 12 hours.</p>
-            <div className="mt-3 flex gap-2">
-              <a href="mailto:youremail@example.com" className="flex-1 border p-2 rounded-xl text-sm inline-flex items-center gap-2"><Mail size={16}/> Email</a>
-              <a href="tel:+628123456789" className="border p-2 rounded-xl text-sm inline-flex items-center gap-2"><Phone size={16}/> Call</a>
-            </div>
-          </div>
-
-        </div>
-      </motion.div>
-    </section>
-
-    {/* Services */}
-    <section id="services" className="mt-12">
-      <motion.h2 initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="text-2xl font-bold">Services — Semua Bahasa & Stack</motion.h2>
-      <p className="text-slate-500 mt-2 max-w-2xl">Full-stack services, automation, mobile, cloud, infra, dan optimasi. Berikut ringkasan paket layanan yang umum diminta.</p>
-
-      <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          {title:'Custom Web App', desc:'React/Next + API (Node/Go/Python) + CI/CD'},
-          {title:'Automation & Bots', desc:'Python bots, Web Scraping, Trading bots'},
-          {title:'Mobile Apps', desc:'React Native / Kotlin / Swift native'},
-          {title:'APIs & Microservices', desc:'Go/Node/Django + gRPC & REST'},
-        ].map((s,i)=> (
-          <motion.div key={i} whileHover={{scale:1.02}} className="p-5 rounded-2xl bg-white dark:bg-slate-800 shadow">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-900"><Code /></div>
-              <div>
-                <h4 className="font-semibold">{s.title}</h4>
-                <p className="text-sm text-slate-500">{s.desc}</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+  <!-- Projects -->
+  <section id="projects">
+    <h2>🔥 Featured Projects</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Trading Bot</h3>
+        <p>Realtime crypto arbitrage bot with Telegram alerts</p>
       </div>
-    </section>
-
-    {/* Portfolio with search & filter */}
-    <section id="projects" className="mt-12">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h3 className="text-2xl font-bold">Portfolio & Case Studies</h3>
-          <p className="text-slate-500">Beberapa contoh proyek yang bisa disesuaikan.</p>
-        </div>
-
-        <div className="flex gap-2 items-center">
-          <div className="flex items-center gap-2 bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm">
-            <Search size={16}/>
-            <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search projects, tags..." className="bg-transparent outline-none text-sm" />
-          </div>
-
-          <select value={selectedLang} onChange={e=>setSelectedLang(e.target.value)} className="p-2 rounded-2xl bg-white dark:bg-slate-800">
-            {languagesWithAll.map(l=> <option key={l} value={l}>{l}</option>)}
-          </select>
-
-          <select value={sortBy} onChange={e=>setSortBy(e.target.value)} className="p-2 rounded-2xl bg-white dark:bg-slate-800">
-            <option>Newest</option>
-            <option>Oldest</option>
-            <option>A-Z</option>
-          </select>
-        </div>
+      <div class="card">
+        <h3>Marketplace App</h3>
+        <p>Full PWA marketplace with payments integration</p>
       </div>
-
-      <div className="mt-6 grid md:grid-cols-2 gap-4">
-        {filteredProjects.map(p=> (
-          <motion.article key={p.id} whileHover={{y:-4}} className="p-4 bg-white dark:bg-slate-800 rounded-2xl shadow cursor-pointer" onClick={()=>setSelectedProject(p)}>
-            <div className="flex justify-between items-start">
-              <div>
-                <h4 className="font-semibold">{p.title}</h4>
-                <p className="text-xs text-slate-500 mt-1">{p.tags.join(' • ')}</p>
-              </div>
-              <div className="text-xs text-slate-400">{p.lang.join(', ')}</div>
-            </div>
-            <p className="mt-3 text-slate-500 text-sm">{p.description}</p>
-            <div className="mt-4 flex gap-2">
-              <a href={p.github} className="text-sm border px-3 py-1 rounded-full">GitHub</a>
-              <a href={p.url} className="text-sm border px-3 py-1 rounded-full">Live</a>
-            </div>
-          </motion.article>
-        ))}
+      <div class="card">
+        <h3>Automation Suite</h3>
+        <p>Scrapers, data pipelines, and reporting tools</p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    {/* Pricing */}
-    <section id="pricing" className="mt-12">
-      <h3 className="text-2xl font-bold">Pricing—Paket fleksibel</h3>
-      <p className="text-slate-500">Harga bisa dinegosiasikan sesuai scope. Contoh paket untuk gambaran awal.</p>
+  <!-- Stats -->
+  <section id="stats">
+    <div class="stats-container">
+      <div class="stat"><span class="counter" data-target="50">0</span>+ Projects</div>
+      <div class="stat"><span class="counter" data-target="20">0</span>+ Clients</div>
+      <div class="stat"><span class="counter" data-target="5">0</span> Years Exp</div>
+    </div>
+  </section>
 
-      <div className="mt-6 grid sm:grid-cols-3 gap-4">
-        {[
-          {title:'Starter', price:'$150', bullets:['Landing page','1 week','1 revision']},
-          {title:'Pro', price:'$800', bullets:['Web app + API','2-3 weeks','3 revisions']},
-          {title:'Enterprise', price:'Custom', bullets:['Architecture','CI/CD','Support SLA']},
-        ].map((p,i)=> (
-          <motion.div key={i} whileHover={{scale:1.02}} className="p-6 rounded-2xl bg-white dark:bg-slate-800 shadow">
-            <h4 className="font-semibold text-lg">{p.title}</h4>
-            <div className="mt-3 text-2xl font-bold">{p.price}</div>
-            <ul className="mt-4 text-sm text-slate-500 space-y-2">
-              {p.bullets.map((b,ii)=> <li key={ii}>• {b}</li>)}
-            </ul>
-            <div className="mt-6">
-              <a href="#contact" className="inline-block px-4 py-2 rounded-2xl border">Select</a>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </section>
+  <!-- Contact -->
+  <section id="contact">
+    <h2>📩 Contact Me</h2>
+    <p>Let’s build something amazing together!</p>
+    <a href="mailto:yourmail@example.com" class="btn">Email Me</a>
+  </section>
 
-    {/* Testimonials & FAQ */}
-    <section className="mt-12 grid lg:grid-cols-2 gap-6">
-      <div>
-        <h4 className="text-xl font-bold">Testimonials</h4>
-        <div className="mt-4 space-y-4">
-          {[{name:'Budi (Startup)', quote:'Delivered a robust MVP in 2 weeks — recommended.'},{name:'Siti (E-commerce)', quote:'Clean code and fast response.'}].map((t,i)=> (
-            <motion.div key={i} className="p-4 rounded-xl bg-white dark:bg-slate-800 shadow">
-              <p className="text-sm">"{t.quote}"</p>
-              <div className="mt-2 text-xs text-slate-500">— {t.name}</div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
+  <footer>
+    <p>© 2025 Irwanto.dev — All Rights Reserved</p>
+  </footer>
 
-      <div>
-        <h4 className="text-xl font-bold">FAQ</h4>
-        <div className="mt-4 space-y-2 text-sm text-slate-500">
-          <div>
-            <b>Q:</b> Berapa lama pengerjaan project biasa?
-            <div>A: 1–4 minggu tergantung scope.</div>
-          </div>
-          <div>
-            <b>Q:</b> Apakah ada NDA?
-            <div>A: Ya, NDA tersedia untuk paket Pro & Enterprise.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    {/* Contact */}
-    <section id="contact" className="mt-12">
-      <h3 className="text-2xl font-bold">Contact & Brief</h3>
-      <p className="text-slate-500">Kirim overview singkat project Anda, budget, dan deadline. Saya akan balas dalam 12 jam kerja.</p>
-
-      <div className="mt-6 grid md:grid-cols-2 gap-6">
-        <form onSubmit={(e)=>{e.preventDefault(); alert('Form dummy — ganti dengan action ke email/endpoint.')}} className="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow">
-          <div className="grid gap-3">
-            <input placeholder="Nama" className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 outline-none" required />
-            <input placeholder="Email" type="email" className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 outline-none" required />
-            <input placeholder="Budget (USD)" className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 outline-none" />
-            <textarea placeholder="Deskripsi singkat proyek" className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 outline-none" rows={5} required />
-            <div className="flex gap-2">
-              <button className="px-4 py-2 rounded-2xl bg-indigo-600 text-white">Send Brief</button>
-              <a href="mailto:youremail@example.com" className="px-4 py-2 rounded-2xl border">Or Email</a>
-            </div>
-          </div>
-        </form>
-
-        <div className="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow">
-          <h4 className="font-semibold">Contact Info</h4>
-          <div className="mt-4 space-y-3 text-sm text-slate-500">
-            <div><b>Email:</b> youremail@example.com</div>
-            <div><b>Phone:</b> +62 812-3456-789</div>
-            <div><b>Location:</b> Jakarta, Indonesia</div>
-            <div className="mt-4"><a href="#" className="inline-flex items-center gap-2 border px-3 py-2 rounded-full"><Github/> View GitHub</a></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer className="mt-12 py-6 text-center text-sm text-slate-500">© {new Date().getFullYear()} GLADIATOR DEV — Built for clients who need results.</footer>
-  </main>
-
-  {/* Modal for project details */}
-  <AnimatePresence>
-    {selectedProject && (
-      <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-        <motion.div initial={{y:20, scale:0.98}} animate={{y:0, scale:1}} exit={{y:10, scale:0.98}} className="max-w-2xl w-full bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-2xl">
-          <div className="flex justify-between items-start">
-            <div>
-              <h4 className="text-xl font-bold">{selectedProject.title}</h4>
-              <div className="text-sm text-slate-500">{selectedProject.lang.join(', ')}</div>
-            </div>
-            <button onClick={()=>setSelectedProject(null)} className="p-2 rounded-full border"><X /></button>
-          </div>
-
-          <p className="mt-4 text-slate-500">{selectedProject.description}</p>
-          <div className="mt-4 flex gap-3">
-            <a href={selectedProject.github} className="px-4 py-2 rounded-2xl border">GitHub</a>
-            <a href={selectedProject.url} className="px-4 py-2 rounded-2xl border">Live</a>
-          </div>
-        </motion.div>
-      </motion.div>
-    )}
-  </AnimatePresence>
-</div>
-
-); }
-
+  <script>
+    // Simple count-up animation for stats
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+      const updateCount = () => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const speed = 200; 
+        const increment = Math.ceil(target / speed);
+        if (count < target) {
+          counter.innerText = count + increment;
+          setTimeout(updateCount, 30);
+        } else {
+          counter.innerText = target;
+        }
+      };
+      updateCount();
+    });
+  </script>
+</body>
+</html>
