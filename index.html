@@ -1,602 +1,272 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulator Mining Dogecoin</title>
-    <style>
-        :root {
-            --doge-primary: #cb9800;
-            --doge-secondary: #12100e;
-            --doge-accent: #e6c34c;
-            --doge-text: #f9f9f9;
-            --doge-bg: linear-gradient(135deg, #1a1a1a, #2c2c2c, #3d3d3d);
-            --doge-card-bg: rgba(30, 30, 30, 0.9);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: var(--doge-bg);
-            color: var(--doge-text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background: var(--doge-card-bg);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-            border: 2px solid var(--doge-primary);
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            color: var(--doge-primary);
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 15px rgba(203, 152, 0, 0.6);
-        }
-        
-        .subtitle {
-            color: var(--doge-accent);
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-        }
-        
-        .doge-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .wallet-section {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(203, 152, 0, 0.4);
-        }
-        
-        .wallet-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        label {
-            font-weight: bold;
-            color: var(--doge-accent);
-        }
-        
-        input {
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid var(--doge-primary);
-            background: rgba(0, 0, 0, 0.5);
-            color: var(--doge-text);
-            font-size: 1rem;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: var(--doge-accent);
-            box-shadow: 0 0 10px rgba(203, 152, 0, 0.5);
-        }
-        
-        .mining-status {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .status-item {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid rgba(203, 152, 0, 0.3);
-        }
-        
-        .status-label {
-            font-size: 1rem;
-            color: #ccc;
-            margin-bottom: 10px;
-        }
-        
-        .status-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--doge-accent);
-            font-family: 'Courier New', monospace;
-        }
-        
-        .mining-box {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(203, 152, 0, 0.3);
-            text-align: center;
-        }
-        
-        .hash-display {
-            font-family: monospace;
-            background: #000;
-            color: #cb9800;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            overflow-x: auto;
-            text-align: left;
-            min-height: 100px;
-            border: 2px solid #333;
-            font-size: 1.1rem;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-        
-        button {
-            background: var(--doge-primary);
-            color: var(--doge-secondary);
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            min-width: 180px;
-        }
-        
-        button:hover {
-            background: var(--doge-accent);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(203, 152, 0, 0.5);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        button:disabled {
-            background: #555;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .mining-animation {
-            width: 100%;
-            height: 150px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            margin: 25px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .shiba {
-            font-size: 4rem;
-            position: absolute;
-            animation: shiba-move 15s linear infinite;
-        }
-        
-        @keyframes shiba-move {
-            0% { transform: translateX(-100px) rotate(0deg); }
-            100% { transform: translateX(1000px) rotate(360deg); }
-        }
-        
-        .doge-coins {
-            position: absolute;
-            font-size: 2rem;
-            opacity: 0;
-            animation: coin-fall 3s linear infinite;
-        }
-        
-        @keyframes coin-fall {
-            0% { 
-                transform: translateY(-100px) rotate(0deg);
-                opacity: 1;
-            }
-            100% { 
-                transform: translateY(250px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        .counter-animation {
-            font-size: 3rem;
-            font-weight: bold;
-            color: var(--doge-accent);
-            position: absolute;
-            opacity: 0;
-            animation: count-up 1s ease-out forwards;
-        }
-        
-        @keyframes count-up {
-            0% { 
-                transform: translateY(0) scale(0.5);
-                opacity: 0;
-            }
-            50% { 
-                opacity: 1;
-            }
-            100% { 
-                transform: translateY(-100px) scale(1.5);
-                opacity: 0;
-            }
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        
-        .stat-card {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid rgba(203, 152, 0, 0.2);
-        }
-        
-        .stat-title {
-            font-size: 1rem;
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-        
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--doge-accent);
-            font-family: 'Courier New', monospace;
-        }
-        
-        .value-change {
-            animation: value-change 0.5s ease-in-out;
-        }
-        
-        @keyframes value-change {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .mining-status, .stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            button {
-                width: 100%;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <div class="doge-icon">🐕</div>
-            <h1>Simulator Mining Dogecoin</h1>
-            <p class="subtitle">Dapatkan 0.005 DOGE setiap detik!</p>
-        </header>
-        
-        <div class="wallet-section">
-            <div class="wallet-form">
-                <div class="input-group">
-                    <label for="walletAddress">Alamat Wallet Dogecoin</label>
-                    <input type="text" id="walletAddress" placeholder="Masukkan alamat wallet DOGE Anda" />
-                </div>
-            </div>
-        </div>
-        
-        <div class="mining-status">
-            <div class="status-item">
-                <div class="status-label">Status Mining</div>
-                <div class="status-value" id="status">Tidak Aktif</div>
-            </div>
-            <div class="status-item">
-                <div class="status-label">DOGE per Detik</div>
-                <div class="status-value">0.005</div>
-            </div>
-            <div class="status-item">
-                <div class="status-label">Total DOGE</div>
-                <div class="status-value" id="mined">0.00000000</div>
-            </div>
-        </div>
-        
-        <div class="mining-box">
-            <h2>Proses Mining Dogecoin</h2>
-            <div class="hash-display" id="hashDisplay">Klik "Mulai Mining" untuk memulai...</div>
-            
-            <div class="mining-animation" id="miningAnimation">
-                <div class="shiba">🐕</div>
-            </div>
-            
-            <div class="controls">
-                <button id="startButton">
-                    <span>▶</span> Mulai Mining
-                </button>
-                <button id="stopButton" disabled>
-                    <span>⏹</span> Berhenti
-                </button>
-                <button id="resetButton">
-                    <span>↺</span> Reset
-                </button>
-                <button id="withdrawButton">
-                    <span>💰</span> Tarik DOGE
-                </button>
-            </div>
-        </div>
-        
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-title">Hash Rate</div>
-                <div class="stat-value" id="hashRate">0 H/s</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">Total Hash</div>
-                <div class="stat-value" id="totalHashes">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">Waktu Mining</div>
-                <div class="stat-value" id="miningTime">00:00:00</div>
-            </div>
-        </div>
+import React, { useState, useMemo } from 'react'; import { motion, AnimatePresence } from 'framer-motion'; import { Github, Mail, Code, Phone, Menu, X, Search } from 'lucide-react';
+
+// NOTE: This is a single-file React component meant to be used in a Tailwind + React environment. // It uses Framer Motion for animations and lucide-react for icons. // If you use shadcn/ui components in your project, feel free to swap the simple elements below for Card/Button/etc.
+
+const LANGUAGES = [ 'JavaScript', 'TypeScript', 'Python', 'Java', 'Go', 'Rust', 'C#', 'PHP', 'Ruby', 'Swift', 'Kotlin', 'C++', 'HTML/CSS', 'SQL' ];
+
+const SAMPLE_PROJECTS = [ { id: 1, title: 'Realtime Trading Bot (Python)', lang: ['Python'], tags: ['Automation', 'Trading', 'Telegram Bot'], description: 'Triangular arbitrage bot with Telegram alerts, modular strategy engine, and risk controls. Deployable on Termux or VPS.', url: '#', github: '#' }, { id: 2, title: 'Progressive Web App - Marketplace (React+TS)', lang: ['TypeScript', 'JavaScript', 'HTML/CSS'], tags: ['PWA', 'E-commerce', 'Payments'], description: 'Fast PWA with offline sync, Stripe integration, and admin dashboard. Unit & integration tests included.', url: '#', github: '#' }, { id: 3, title: 'Mobile App - Finance Tracker (Kotlin/Swift)', lang: ['Kotlin', 'Swift'], tags: ['Mobile', 'Finance'], description: 'Native mobile apps with secure auth, local encrypted DB, and push notifications.', url: '#', github: '#' }, { id: 4, title: 'High-performance API (Go)', lang: ['Go'], tags: ['API', 'Microservices'], description: 'Low-latency REST API with gRPC support, automated CI/CD, and observability (Prometheus, Grafana).', url: '#', github: '#' } ];
+
+export default function PersonalDevPortfolio() { const [query, setQuery] = useState(''); const [selectedLang, setSelectedLang] = useState('All'); const [showMobileMenu, setShowMobileMenu] = useState(false); const [sortBy, setSortBy] = useState('Newest'); const [selectedProject, setSelectedProject] = useState(null);
+
+const languagesWithAll = useMemo(() => ['All', ...LANGUAGES], []);
+
+const filteredProjects = useMemo(() => { const q = query.trim().toLowerCase(); let list = SAMPLE_PROJECTS.filter(p => { const matchQuery = !q || p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) || p.tags.join(' ').toLowerCase().includes(q); const matchLang = selectedLang === 'All' || p.lang.includes(selectedLang); return matchQuery && matchLang; });
+
+if (sortBy === 'Newest') list = list.sort((a,b)=>b.id-a.id);
+if (sortBy === 'Oldest') list = list.sort((a,b)=>a.id-b.id);
+if (sortBy === 'A-Z') list = list.sort((a,b)=>a.title.localeCompare(b.title));
+
+return list;
+
+}, [query, selectedLang, sortBy]);
+
+return ( <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100"> <header className="max-w-6xl mx-auto p-4 flex items-center justify-between"> <div className="flex items-center gap-3"> <div className="bg-gradient-to-r from-indigo-600 to-cyan-400 text-white px-3 py-2 rounded-2xl font-semibold shadow-lg">GLADIATOR DEV</div> <nav className="hidden md:flex gap-6 items-center text-sm"> <a href="#services" className="hover:underline">Services</a> <a href="#projects" className="hover:underline">Portfolio</a> <a href="#pricing" className="hover:underline">Pricing</a> <a href="#contact" className="hover:underline">Contact</a> </nav> </div>
+
+<div className="flex items-center gap-3">
+      <a href="mailto:youremail@example.com" className="hidden sm:inline-flex items-center gap-2 border p-2 rounded-2xl text-sm"> <Mail size={16}/> Hire me</a>
+      <button className="p-2 md:hidden" onClick={()=>setShowMobileMenu(v=>!v)} aria-label="menu">
+        {showMobileMenu ? <X /> : <Menu />}
+      </button>
     </div>
+  </header>
 
-    <script>
-        // State aplikasi
-        const state = {
-            mining: false,
-            hashCount: 0,
-            minedDOGE: 0,
-            startTime: null,
-            miningInterval: null,
-            animationInterval: null,
-            miningTime: 0
-        };
+  <AnimatePresence>
+    {showMobileMenu && (
+      <motion.div initial={{opacity:0, y:-10}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="md:hidden bg-white dark:bg-slate-800 shadow-md">
+        <div className="p-4 flex flex-col gap-3">
+          <a href="#services">Services</a>
+          <a href="#projects">Portfolio</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
 
-        // Elemen DOM
-        const startButton = document.getElementById('startButton');
-        const stopButton = document.getElementById('stopButton');
-        const resetButton = document.getElementById('resetButton');
-        const withdrawButton = document.getElementById('withdrawButton');
-        const hashDisplay = document.getElementById('hashDisplay');
-        const statusDisplay = document.getElementById('status');
-        const minedDisplay = document.getElementById('mined');
-        const hashRateDisplay = document.getElementById('hashRate');
-        const totalHashesDisplay = document.getElementById('totalHashes');
-        const miningTimeDisplay = document.getElementById('miningTime');
-        const walletAddressInput = document.getElementById('walletAddress');
-        const miningAnimation = document.getElementById('miningAnimation');
+  {/* Hero */}
+  <main className="max-w-6xl mx-auto px-4 py-12">
+    <section className="grid md:grid-cols-2 gap-8 items-center">
+      <motion.div initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} transition={{delay:0.1}}>
+        <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+          Programmer Freelance — <span className="text-indigo-600">Solusi Cepat, Kode Rapi</span>
+        </h1>
+        <p className="mt-4 text-slate-600 dark:text-slate-300 max-w-xl">Saya membantu startup & bisnis mengotomasi tugas, membangun aplikasi web/mobile, dan men-deploy sistem produksi yang aman & terukur. Spesialis: automation, backend, mobile, dan integrasi API.</p>
 
-        // Nilai DOGE per detik
-        const DOGE_PER_SECOND = 0.005;
+        <div className="mt-6 flex gap-3">
+          <a href="#contact" className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-2xl shadow hover:scale-[1.02]">Hire me</a>
+          <a href="#projects" className="inline-flex items-center gap-2 border px-4 py-2 rounded-2xl">Lihat Portfolio</a>
+        </div>
 
-        // Fungsi untuk menghasilkan hash acak (simulasi)
-        function generateRandomHash() {
-            const characters = '0123456789abcdef';
-            let hash = '';
-            for (let i = 0; i < 64; i++) {
-                hash += characters[Math.floor(Math.random() * 16)];
-            }
-            return hash;
-        }
+        <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {['Fast Delivery','Clean Code','Support','NDA'].map((b,i)=> (
+            <div key={i} className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm text-center text-sm">{b}</div>
+          ))}
+        </div>
+      </motion.div>
 
-        // Fungsi untuk membuat animasi angka
-        function createCounterAnimation() {
-            const counter = document.createElement('div');
-            counter.className = 'counter-animation';
-            counter.textContent = '+0.005 DOGE';
-            miningAnimation.appendChild(counter);
-            
-            // Hapus elemen setelah animasi selesai
-            setTimeout(() => {
-                miningAnimation.removeChild(counter);
-            }, 1000);
-        }
+      <motion.div initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} className="relative">
+        <div className="rounded-2xl p-6 bg-gradient-to-br from-white to-slate-100 dark:from-slate-800 dark:to-slate-900 shadow-2xl">
+          <div className="grid grid-cols-3 gap-4">
+            {LANGUAGES.slice(0,9).map((l,i)=> (
+              <div key={i} className="p-4 bg-white dark:bg-slate-700 rounded-xl text-center">{l}</div>
+            ))}
+          </div>
 
-        // Fungsi untuk membuat animasi koin
-        function createCoinAnimation() {
-            const coin = document.createElement('div');
-            coin.className = 'doge-coins';
-            coin.textContent = 'Ð';
-            coin.style.left = `${Math.random() * 90 + 5}%`;
-            coin.style.animationDelay = `${Math.random() * 2}s`;
-            miningAnimation.appendChild(coin);
-            
-            // Hapus elemen setelah animasi selesai
-            setTimeout(() => {
-                if (miningAnimation.contains(coin)) {
-                    miningAnimation.removeChild(coin);
-                }
-            }, 3000);
-        }
+          <div className="mt-6 bg-white dark:bg-slate-800 p-4 rounded-xl">
+            <h4 className="text-sm font-semibold">Quick Contact</h4>
+            <p className="text-xs text-slate-500">Available for remote & on-site (Jakarta). Response within 12 hours.</p>
+            <div className="mt-3 flex gap-2">
+              <a href="mailto:youremail@example.com" className="flex-1 border p-2 rounded-xl text-sm inline-flex items-center gap-2"><Mail size={16}/> Email</a>
+              <a href="tel:+628123456789" className="border p-2 rounded-xl text-sm inline-flex items-center gap-2"><Phone size={16}/> Call</a>
+            </div>
+          </div>
 
-        // Fungsi untuk memperbarui UI
-        function updateUI() {
-            totalHashesDisplay.textContent = state.hashCount.toLocaleString();
-            minedDisplay.textContent = state.minedDOGE.toFixed(8);
-            
-            // Hitung hash rate
-            if (state.startTime && state.mining) {
-                const elapsedTime = (Date.now() - state.startTime) / 1000;
-                const hashRate = Math.floor(state.hashCount / elapsedTime);
-                hashRateDisplay.textContent = `${hashRate.toLocaleString()} H/s`;
-            }
-            
-            // Perbarui waktu mining
-            if (state.mining) {
-                state.miningTime += 1;
-                const hours = Math.floor(state.miningTime / 3600);
-                const minutes = Math.floor((state.miningTime % 3600) / 60);
-                const seconds = state.miningTime % 60;
-                miningTimeDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-        }
+        </div>
+      </motion.div>
+    </section>
 
-        // Fungsi untuk memulai mining
-        function startMining() {
-            if (state.mining) return;
-            
-            // Validasi wallet address
-            if (!walletAddressInput.value.trim()) {
-                alert('Masukkan alamat wallet Dogecoin Anda terlebih dahulu!');
-                return;
-            }
-            
-            state.mining = true;
-            state.startTime = Date.now();
-            startButton.disabled = true;
-            stopButton.disabled = false;
-            statusDisplay.textContent = 'Mining...';
-            statusDisplay.style.color = '#cb9800';
-            
-            // Mulai animasi
-            createCoinAnimation();
-            const shiba = document.querySelector('.shiba');
-            shiba.style.animationPlayState = 'running';
-            
-            // Animasi koin
-            state.animationInterval = setInterval(() => {
-                createCoinAnimation();
-            }, 300);
-            
-            // Proses mining
-            state.miningInterval = setInterval(() => {
-                const hash = generateRandomHash();
-                state.hashCount++;
-                
-                hashDisplay.textContent = hash;
-                
-                // Tambah DOGE setiap detik
-                if (state.hashCount % 100 === 0) {
-                    state.minedDOGE += DOGE_PER_SECOND;
-                    minedDisplay.classList.add('value-change');
-                    setTimeout(() => minedDisplay.classList.remove('value-change'), 500);
-                    
-                    // Tampilkan animasi angka
-                    createCounterAnimation();
-                }
-                
-                updateUI();
-            }, 10);
-        }
+    {/* Services */}
+    <section id="services" className="mt-12">
+      <motion.h2 initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="text-2xl font-bold">Services — Semua Bahasa & Stack</motion.h2>
+      <p className="text-slate-500 mt-2 max-w-2xl">Full-stack services, automation, mobile, cloud, infra, dan optimasi. Berikut ringkasan paket layanan yang umum diminta.</p>
 
-        // Fungsi untuk menghentikan mining
-        function stopMining() {
-            state.mining = false;
-            clearInterval(state.miningInterval);
-            clearInterval(state.animationInterval);
-            startButton.disabled = false;
-            stopButton.disabled = true;
-            statusDisplay.textContent = 'Ditangguhkan';
-            statusDisplay.style.color = '#e6c34c';
-            
-            // Hentikan animasi
-            const shiba = document.querySelector('.shiba');
-            shiba.style.animationPlayState = 'paused';
-        }
+      <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          {title:'Custom Web App', desc:'React/Next + API (Node/Go/Python) + CI/CD'},
+          {title:'Automation & Bots', desc:'Python bots, Web Scraping, Trading bots'},
+          {title:'Mobile Apps', desc:'React Native / Kotlin / Swift native'},
+          {title:'APIs & Microservices', desc:'Go/Node/Django + gRPC & REST'},
+        ].map((s,i)=> (
+          <motion.div key={i} whileHover={{scale:1.02}} className="p-5 rounded-2xl bg-white dark:bg-slate-800 shadow">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-900"><Code /></div>
+              <div>
+                <h4 className="font-semibold">{s.title}</h4>
+                <p className="text-sm text-slate-500">{s.desc}</p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
 
-        // Fungsi untuk mereset state
-        function resetMining() {
-            stopMining();
-            state.hashCount = 0;
-            state.minedDOGE = 0;
-            state.miningTime = 0;
-            hashDisplay.textContent = 'Klik "Mulai Mining" untuk memulai...';
-            hashDisplay.style.color = '#cb9800';
-            
-            // Reset UI
-            statusDisplay.textContent = 'Tidak Aktif';
-            statusDisplay.style.color = '#e6c34c';
-            hashRateDisplay.textContent = '0 H/s';
-            miningTimeDisplay.textContent = '00:00:00';
-            updateUI();
-        }
+    {/* Portfolio with search & filter */}
+    <section id="projects" className="mt-12">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h3 className="text-2xl font-bold">Portfolio & Case Studies</h3>
+          <p className="text-slate-500">Beberapa contoh proyek yang bisa disesuaikan.</p>
+        </div>
 
-        // Fungsi untuk menarik DOGE
-        function withdrawDOGE() {
-            if (state.minedDOGE <= 0) {
-                alert('Anda belum memiliki DOGE untuk ditarik!');
-                return;
-            }
-            
-            if (!walletAddressInput.value.trim()) {
-                alert('Masukkan alamat wallet Dogecoin Anda terlebih dahulu!');
-                return;
-            }
-            
-            alert(`🎉 Berhasil menarik ${state.minedDOGE.toFixed(8)} DOGE ke alamat: ${walletAddressInput.value}`);
-            state.minedDOGE = 0;
-            updateUI();
-        }
+        <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-2 bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm">
+            <Search size={16}/>
+            <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search projects, tags..." className="bg-transparent outline-none text-sm" />
+          </div>
 
-        // Event listeners
-        startButton.addEventListener('click', startMining);
-        stopButton.addEventListener('click', stopMining);
-        resetButton.addEventListener('click', resetMining);
-        withdrawButton.addEventListener('click', withdrawDOGE);
+          <select value={selectedLang} onChange={e=>setSelectedLang(e.target.value)} className="p-2 rounded-2xl bg-white dark:bg-slate-800">
+            {languagesWithAll.map(l=> <option key={l} value={l}>{l}</option>)}
+          </select>
 
-        // Inisialisasi
-        updateUI();
-    </script>
-</body>
-</html>
+          <select value={sortBy} onChange={e=>setSortBy(e.target.value)} className="p-2 rounded-2xl bg-white dark:bg-slate-800">
+            <option>Newest</option>
+            <option>Oldest</option>
+            <option>A-Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="mt-6 grid md:grid-cols-2 gap-4">
+        {filteredProjects.map(p=> (
+          <motion.article key={p.id} whileHover={{y:-4}} className="p-4 bg-white dark:bg-slate-800 rounded-2xl shadow cursor-pointer" onClick={()=>setSelectedProject(p)}>
+            <div className="flex justify-between items-start">
+              <div>
+                <h4 className="font-semibold">{p.title}</h4>
+                <p className="text-xs text-slate-500 mt-1">{p.tags.join(' • ')}</p>
+              </div>
+              <div className="text-xs text-slate-400">{p.lang.join(', ')}</div>
+            </div>
+            <p className="mt-3 text-slate-500 text-sm">{p.description}</p>
+            <div className="mt-4 flex gap-2">
+              <a href={p.github} className="text-sm border px-3 py-1 rounded-full">GitHub</a>
+              <a href={p.url} className="text-sm border px-3 py-1 rounded-full">Live</a>
+            </div>
+          </motion.article>
+        ))}
+      </div>
+    </section>
+
+    {/* Pricing */}
+    <section id="pricing" className="mt-12">
+      <h3 className="text-2xl font-bold">Pricing—Paket fleksibel</h3>
+      <p className="text-slate-500">Harga bisa dinegosiasikan sesuai scope. Contoh paket untuk gambaran awal.</p>
+
+      <div className="mt-6 grid sm:grid-cols-3 gap-4">
+        {[
+          {title:'Starter', price:'$150', bullets:['Landing page','1 week','1 revision']},
+          {title:'Pro', price:'$800', bullets:['Web app + API','2-3 weeks','3 revisions']},
+          {title:'Enterprise', price:'Custom', bullets:['Architecture','CI/CD','Support SLA']},
+        ].map((p,i)=> (
+          <motion.div key={i} whileHover={{scale:1.02}} className="p-6 rounded-2xl bg-white dark:bg-slate-800 shadow">
+            <h4 className="font-semibold text-lg">{p.title}</h4>
+            <div className="mt-3 text-2xl font-bold">{p.price}</div>
+            <ul className="mt-4 text-sm text-slate-500 space-y-2">
+              {p.bullets.map((b,ii)=> <li key={ii}>• {b}</li>)}
+            </ul>
+            <div className="mt-6">
+              <a href="#contact" className="inline-block px-4 py-2 rounded-2xl border">Select</a>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+
+    {/* Testimonials & FAQ */}
+    <section className="mt-12 grid lg:grid-cols-2 gap-6">
+      <div>
+        <h4 className="text-xl font-bold">Testimonials</h4>
+        <div className="mt-4 space-y-4">
+          {[{name:'Budi (Startup)', quote:'Delivered a robust MVP in 2 weeks — recommended.'},{name:'Siti (E-commerce)', quote:'Clean code and fast response.'}].map((t,i)=> (
+            <motion.div key={i} className="p-4 rounded-xl bg-white dark:bg-slate-800 shadow">
+              <p className="text-sm">"{t.quote}"</p>
+              <div className="mt-2 text-xs text-slate-500">— {t.name}</div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h4 className="text-xl font-bold">FAQ</h4>
+        <div className="mt-4 space-y-2 text-sm text-slate-500">
+          <div>
+            <b>Q:</b> Berapa lama pengerjaan project biasa?
+            <div>A: 1–4 minggu tergantung scope.</div>
+          </div>
+          <div>
+            <b>Q:</b> Apakah ada NDA?
+            <div>A: Ya, NDA tersedia untuk paket Pro & Enterprise.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* Contact */}
+    <section id="contact" className="mt-12">
+      <h3 className="text-2xl font-bold">Contact & Brief</h3>
+      <p className="text-slate-500">Kirim overview singkat project Anda, budget, dan deadline. Saya akan balas dalam 12 jam kerja.</p>
+
+      <div className="mt-6 grid md:grid-cols-2 gap-6">
+        <form onSubmit={(e)=>{e.preventDefault(); alert('Form dummy — ganti dengan action ke email/endpoint.')}} className="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow">
+          <div className="grid gap-3">
+            <input placeholder="Nama" className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 outline-none" required />
+            <input placeholder="Email" type="email" className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 outline-none" required />
+            <input placeholder="Budget (USD)" className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 outline-none" />
+            <textarea placeholder="Deskripsi singkat proyek" className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 outline-none" rows={5} required />
+            <div className="flex gap-2">
+              <button className="px-4 py-2 rounded-2xl bg-indigo-600 text-white">Send Brief</button>
+              <a href="mailto:youremail@example.com" className="px-4 py-2 rounded-2xl border">Or Email</a>
+            </div>
+          </div>
+        </form>
+
+        <div className="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow">
+          <h4 className="font-semibold">Contact Info</h4>
+          <div className="mt-4 space-y-3 text-sm text-slate-500">
+            <div><b>Email:</b> youremail@example.com</div>
+            <div><b>Phone:</b> +62 812-3456-789</div>
+            <div><b>Location:</b> Jakarta, Indonesia</div>
+            <div className="mt-4"><a href="#" className="inline-flex items-center gap-2 border px-3 py-2 rounded-full"><Github/> View GitHub</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer className="mt-12 py-6 text-center text-sm text-slate-500">© {new Date().getFullYear()} GLADIATOR DEV — Built for clients who need results.</footer>
+  </main>
+
+  {/* Modal for project details */}
+  <AnimatePresence>
+    {selectedProject && (
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+        <motion.div initial={{y:20, scale:0.98}} animate={{y:0, scale:1}} exit={{y:10, scale:0.98}} className="max-w-2xl w-full bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-2xl">
+          <div className="flex justify-between items-start">
+            <div>
+              <h4 className="text-xl font-bold">{selectedProject.title}</h4>
+              <div className="text-sm text-slate-500">{selectedProject.lang.join(', ')}</div>
+            </div>
+            <button onClick={()=>setSelectedProject(null)} className="p-2 rounded-full border"><X /></button>
+          </div>
+
+          <p className="mt-4 text-slate-500">{selectedProject.description}</p>
+          <div className="mt-4 flex gap-3">
+            <a href={selectedProject.github} className="px-4 py-2 rounded-2xl border">GitHub</a>
+            <a href={selectedProject.url} className="px-4 py-2 rounded-2xl border">Live</a>
+          </div>
+        </motion.div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+</div>
+
+); }
+
