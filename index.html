@@ -1,124 +1,1063 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Irwanto | Fullstack Developer</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CodeBot — Automate Web & Crypto</title>
+  <meta name="description" content="Leading web & crypto automation solutions. Build Web, Auto Trading, and Auto Claim Faucet with advanced technology." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-    body { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #fff; line-height: 1.6; }
-    /* Navbar */
-    .navbar { display: flex; justify-content: space-between; padding: 1rem 2rem; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); position: sticky; top: 0; }
-    .nav-links { list-style: none; display: flex; gap: 1.5rem; }
-    .nav-links a { color: #fff; text-decoration: none; font-weight: 600; }
-    .nav-links a:hover { color: #ffeb3b; }
-    /* Hero */
-    .hero { text-align: center; padding: 5rem 2rem; }
-    .hero h1 { font-size: 2.5rem; }
-    .hero p { margin: 1rem 0; }
-    .btn { display: inline-block; padding: 0.7rem 1.5rem; background: #ff4081; border-radius: 30px; color: #fff; text-decoration: none; transition: 0.3s; }
-    .btn:hover { background: #f50057; }
-    /* Sections */
-    section { padding: 4rem 2rem; text-align: center; }
-    h2 { font-size: 2rem; margin-bottom: 2rem; }
-    /* Cards */
-    .cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 1.5rem; }
-    .card { background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 15px; transition: transform 0.3s, background 0.3s; }
-    .card:hover { transform: translateY(-8px); background: rgba(255,255,255,0.2); }
-    /* Stats */
-    .stats-container { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
-    .stat { font-size: 1.5rem; background: rgba(0,0,0,0.3); padding: 1rem 2rem; border-radius: 15px; }
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
+      --accent: #7c3aed;
+      --text: #f8fafc;
+      --text-muted: #cbd5e1;
+      --bg-dark: #0f172a;
+      --bg-card: rgba(30, 41, 59, 0.5);
+      --border: rgba(255, 255, 255, 0.1);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0a0f1d 100%);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      line-height: 1.6;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    
+    .logo-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    
+    .nav-link:hover {
+      color: var(--text);
+    }
+    
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      margin-bottom: 4rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    
+    @media (min-width: 768px) {
+      .hero h1 {
+        font-size: 3.5rem;
+      }
+    }
+    
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(90deg, #6366f1, #3b82f6, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      font-size: 1rem;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Products Section */
+    .products {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+    
+    @media (min-width: 768px) {
+      .products {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    .product-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .sold-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--success);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .product-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .product-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .pricing {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .current-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    
+    .original-price {
+      font-size: 1rem;
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+    
+    .discount-badge {
+      background: var(--danger);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .product-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+    
+    .feature-list {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+    
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+    
+    .feature-list li::before {
+      content: "✓";
+      color: var(--success);
+      margin-right: 0.5rem;
+      font-weight: bold;
+    }
+    
+    .product-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+    
+    /* Payment Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: var(--bg-dark);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid var(--border);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .payment-options {
+      margin: 1.5rem 0;
+    }
+    
+    .payment-option {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .payment-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .payment-option.active {
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid var(--primary);
+    }
+    
+    .payment-details {
+      display: none;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .crypto-calculator {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+    }
+    
+    .crypto-amount {
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+    }
+    
+    .wallet-address {
+      display: flex;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      font-family: monospace;
+      align-items: center;
+    }
+    
+    .copy-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      margin-left: 0.5rem;
+      white-space: nowrap;
+    }
+    
+    /* Testimonials */
+    .testimonials {
+      margin-bottom: 4rem;
+    }
+    
+    .testimonials h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+    
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    @media (min-width: 768px) {
+      .testimonial-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    .testimonial-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+    }
+    
+    .testimonial-text {
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+    
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .author-avatar {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .author-info h4 {
+      font-size: 1rem;
+    }
+    
+    .author-info p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    
+    /* Guarantee Section */
+    .guarantee {
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    .guarantee h2 {
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+      background: linear-gradient(90deg, var(--primary-dark), var(--accent));
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .cta-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-section p {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Contact Section */
+    .contact {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .social-link {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      font-size: 1.25rem;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    
+    .social-link:hover {
+      background: var(--primary);
+      transform: translateY(-3px);
+    }
+    
     /* Footer */
-    footer { text-align: center; padding: 1rem; background: rgba(0,0,0,0.4); margin-top: 3rem; }
+    footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      text-align: center;
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+    
+    .footer-links a:hover {
+      color: var(--text);
+    }
+    
+    .copyright {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    /* Loading spinner */
+    .spinner {
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 2px solid var(--primary);
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <nav class="navbar">
-      <div class="logo">⚡ Irwanto.dev</div>
-      <ul class="nav-links">
-        <li><a href="#services">Services</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-    <div class="hero">
-      <h1>💻 Fullstack Developer</h1>
-      <p>I build modern websites, bots, and apps with premium quality 🚀</p>
-      <a href="#contact" class="btn">Hire Me</a>
-    </div>
-  </header>
-
-  <!-- Services -->
-  <section id="services">
-    <h2>🚀 My Services</h2>
-    <div class="cards">
-      <div class="card">Web Development 🌐</div>
-      <div class="card">Bot & Automation 🤖</div>
-      <div class="card">Mobile Apps 📱</div>
-      <div class="card">Database & API ⚡</div>
-    </div>
-  </section>
-
-  <!-- Projects -->
-  <section id="projects">
-    <h2>🔥 Featured Projects</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Trading Bot</h3>
-        <p>Realtime crypto arbitrage bot with Telegram alerts</p>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🤖</div>
+        <span>CodeBot</span>
       </div>
-      <div class="card">
-        <h3>Marketplace App</h3>
-        <p>Full PWA marketplace with payments integration</p>
+      <nav>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <button class="btn btn-primary" onclick="handleDemo()">Free Demo</button>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h1>Automate <span class="gradient-text">Web & Crypto</span> with AI</h1>
+      <p>An all-in-one solution for building websites, automated trading, and crypto faucet claims — faster, safer, and more efficient.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+        <button class="btn btn-primary" onclick="handleTry()">Try Now - Free</button>
+        <button class="btn btn-secondary" onclick="handleDemo()">View Demo</button>
       </div>
-      <div class="card">
-        <h3>Automation Suite</h3>
-        <p>Scrapers, data pipelines, and reporting tools</p>
+    </section>
+
+    <section class="products" id="features">
+      <div class="product-card">
+        <div class="sold-badge">Sold: <span id="buildweb-sold">142</span></div>
+        <div class="product-icon">🌐</div>
+        <h3>Build Web</h3>
+        <div class="pricing">
+          <span class="current-price">$80</span>
+          <span class="original-price">$120</span>
+          <span class="discount-badge">33% OFF</span>
+        </div>
+        <p>Create a professional website in minutes with our AI designer and premium templates.</p>
+        <ul class="feature-list">
+          <li>AI Drag & Drop Designer</li>
+          <li>Responsive Templates</li>
+          <li>SEO & Speed Booster</li>
+          <li>Payment Integration</li>
+          <li>1-Click Auto Deploy</li>
+        </ul>
+        <div class="product-actions">
+          <button class="btn btn-primary" style="flex: 1;" onclick="showPaymentModal('Build Web', 80)">Buy Now</button>
+          <button class="btn btn-secondary" onclick="demo('Build Web')">Demo</button>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="sold-badge">Sold: <span id="autotrade-sold">167</span></div>
+        <div class="product-icon">📈</div>
+        <h3>Auto Trading</h3>
+        <div class="pricing">
+          <span class="current-price">$80</span>
+          <span class="original-price">$90</span>
+          <span class="discount-badge">11% OFF</span>
+        </div>
+        <p>Execute trading strategies 24/7 with AI market analysis and automated risk management.</p>
+        <ul class="feature-list">
+          <li>Multi-Exchange Support</li>
+          <li>Smart Strategy Engine</li>
+          <li>AI Market Analyzer</li>
+          <li>Auto Risk Management</li>
+          <li>Backtest & Simulation</li>
+        </ul>
+        <div class="product-actions">
+          <button class="btn btn-primary" style="flex: 1;" onclick="showPaymentModal('Auto Trading', 80)">Buy Now</button>
+          <button class="btn btn-secondary" onclick="demo('Auto Trading')">Demo</button>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="sold-badge">Sold: <span id="autoclaim-sold">189</span></div>
+        <div class="product-icon">🪙</div>
+        <h3>Auto Claim Faucet</h3>
+        <div class="pricing">
+          <span class="current-price">$70</span>
+          <span class="original-price">$100</span>
+          <span class="discount-badge">30% OFF</span>
+        </div>
+        <p>Automatically claim from various crypto faucets with AI captcha solver and proxy rotation.</p>
+        <ul class="feature-list">
+          <li>Multi-Faucet Integration</li>
+          <li>AI Captcha Solver</li>
+          <li>Smart Scheduler</li>
+          <li>Proxy & Anti-Ban System</li>
+          <li>Auto Withdraw to Wallet</li>
+        </ul>
+        <div class="product-actions">
+          <button class="btn btn-primary" style="flex: 1;" onclick="showPaymentModal('Auto Claim Faucet', 70)">Buy Now</button>
+          <button class="btn btn-secondary" onclick="demo('Auto Claim Faucet')">Demo</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="modal" id="paymentModal">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+        <h2>Payment for <span id="product-name"></span></h2>
+        <p>Price: <strong id="product-price"></strong></p>
+        <p>Choose your preferred payment method:</p>
+        
+        <div class="payment-options">
+          <div class="payment-option" onclick="selectPayment('bitcoin')">
+            <input type="radio" name="payment" id="bitcoin" style="margin-right: 10px;">
+            <label for="bitcoin">Bitcoin (BTC)</label>
+          </div>
+          <div class="payment-details" id="bitcoin-details">
+            <p>Send payment to the following Bitcoin address:</p>
+            <div class="crypto-calculator">
+              <span id="bitcoin-amount">Calculating Bitcoin amount...</span>
+              <div class="spinner" id="btc-spinner"></div>
+            </div>
+            <div class="wallet-address">
+              <span id="bitcoin-address">19stSHq249k3emCn2DBpJXyTBXTDf18GQd</span>
+              <button class="copy-btn" onclick="copyAddress('bitcoin-address')">Copy</button>
+            </div>
+          </div>
+          
+          <div class="payment-option" onclick="selectPayment('litecoin')">
+            <input type="radio" name="payment" id="litecoin" style="margin-right: 10px;">
+            <label for="litecoin">Litecoin (LTC)</label>
+          </div>
+          <div class="payment-details" id="litecoin-details">
+            <p>Send payment to the following Litecoin address:</p>
+            <div class="crypto-calculator">
+              <span id="litecoin-amount">Calculating Litecoin amount...</span>
+              <div class="spinner" id="ltc-spinner"></div>
+            </div>
+            <div class="wallet-address">
+              <span id="litecoin-address">LN13HYEmnceNxD3H7QZVxcata8CHQdqxtu</span>
+              <button class="copy-btn" onclick="copyAddress('litecoin-address')">Copy</button>
+            </div>
+          </div>
+          
+          <div class="payment-option" onclick="selectPayment('dogecoin')">
+            <input type="radio" name="payment" id="dogecoin" style="margin-right: 10px;">
+            <label for="dogecoin">Dogecoin (DOGE)</label>
+          </div>
+          <div class="payment-details" id="dogecoin-details">
+            <p>Send payment to the following Dogecoin address:</p>
+            <div class="crypto-calculator">
+              <span id="dogecoin-amount">Calculating Dogecoin amount...</span>
+              <div class="spinner" id="doge-spinner"></div>
+            </div>
+            <div class="wallet-address">
+              <span id="dogecoin-address">DC63hiiZGCaAjW2UWRq9F4nMQq6o8u3sCh</span>
+              <button class="copy-btn" onclick="copyAddress('dogecoin-address')">Copy</button>
+            </div>
+          </div>
+          
+          <div class="payment-option" onclick="selectPayment('ethereum')">
+            <input type="radio" name="payment" id="ethereum" style="margin-right: 10px;">
+            <label for="ethereum">Ethereum (ETH)</label>
+          </div>
+          <div class="payment-details" id="ethereum-details">
+            <p>Send payment to the following Ethereum address:</p>
+            <div class="crypto-calculator">
+              <span id="ethereum-amount">Calculating Ethereum amount...</span>
+              <div class="spinner" id="eth-spinner"></div>
+            </div>
+            <div class="wallet-address">
+              <span id="ethereum-address">0x3fa59e7466A529E729B9c1521fBAAB3F51715618</span>
+              <button class="copy-btn" onclick="copyAddress('ethereum-address')">Copy</button>
+            </div>
+          </div>
+          
+          <div class="payment-option" onclick="selectPayment('paypal')">
+            <input type="radio" name="payment" id="paypal" style="margin-right: 10px;">
+            <label for="paypal">PayPal</label>
+          </div>
+          <div class="payment-details" id="paypal-details">
+            <p>Send payment to the following PayPal:</p>
+            <div class="wallet-address">
+              <span id="paypal-address">wantoirwan778@gmail.com</span>
+              <button class="copy-btn" onclick="copyAddress('paypal-address')">Copy</button>
+            </div>
+          </div>
+        </div>
+        
+        <p style="font-size: 0.8rem; margin-top: 1rem; color: var(--text-muted);">
+          After making the payment, please confirm by sending proof of transfer to the email wantoirwan778@gmail.com
+        </p>
+        
+        <button class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;" onclick="completePayment()">
+          I Have Paid
+        </button>
       </div>
     </div>
-  </section>
 
-  <!-- Stats -->
-  <section id="stats">
-    <div class="stats-container">
-      <div class="stat"><span class="counter" data-target="50">0</span>+ Projects</div>
-      <div class="stat"><span class="counter" data-target="20">0</span>+ Clients</div>
-      <div class="stat"><span class="counter" data-target="5">0</span> Years Exp</div>
-    </div>
-  </section>
+    <section class="testimonials">
+      <h2>What Our Users Say</h2>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <p class="testimonial-text">"Initially I was skeptical, but this bot really works. Just set it up once, and it automatically keeps withdrawing. Good for earning daily spare change 😁"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">A</div>
+            <div class="author-info">
+              <h4>Ahmad</h4>
+              <p>Auto Claim User</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <p class="testimonial-text">"It's cool, I can sleep and it still claims. It's not complicated, perfect for those who are lazy to click manually."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">B</div>
+            <div class="author-info">
+              <h4>Budi</h4>
+              <p>Newbie Trader</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <p class="testimonial-text">"Only tried it for 2 days, and the results are already visible. It's good for topping up a little bit of pocket money, since I just have to run it."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">C</div>
+            <div class="author-info">
+              <h4>Citra</h4>
+              <p>Freelancer</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <p class="testimonial-text">"I thought the setup would be complicated, but it's super easy. One click and it automatically runs on its own."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">D</div>
+            <div class="author-info">
+              <h4>Doni</h4>
+              <p>Student</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <p class="testimonial-text">"Awesome, it's been proven. Withdrawals are smooth, the bot doesn't cause any drama. Recommended!"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">E</div>
+            <div class="author-info">
+              <h4>Eko</h4>
+              <p>Web Developer</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <p class="testimonial-text">"I work, the bot also works. So when I check my wallet, the money has already increased. Super chill 🤙"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">F</div>
+            <div class="author-info">
+              <h4>Fajar</h4>
+              <p>Employee</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <!-- Contact -->
-  <section id="contact">
-    <h2>📩 Contact Me</h2>
-    <p>Let’s build something amazing together!</p>
-    <a href="mailto:yourmail@example.com" class="btn">Email Me</a>
-  </section>
+    <section class="guarantee">
+      <h2><i class="fas fa-shield-alt"></i> 30-Day Money-Back Guarantee</h2>
+      <p>We have full confidence in the quality of our product. If within 30 days you are not satisfied with the results, we will refund your money without difficult questions.</p>
+    </section>
 
-  <footer>
-    <p>© 2025 Irwanto.dev — All Rights Reserved</p>
-  </footer>
+    <section class="cta-section">
+      <h2>Ready to Boost Your Productivity?</h2>
+      <p>Join hundreds of users who have experienced a digital transformation with our automation solutions.</p>
+      <button class="btn btn-secondary" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); color: white;" onclick="handleBundle()">
+        Get the Bundle Package - Save 20%
+      </button>
+    </section>
+
+    <section class="contact">
+      <h2>Contact Us</h2>
+      <p>Need help or have questions? Please contact us through the following channels:</p>
+      <div class="social-links">
+        <a href="mailto:wantoirwan778@gmail.com" class="social-link">
+          <i class="far fa-envelope"></i>
+        </a>
+        <a href="https://t.me/yourusername" class="social-link">
+          <i class="fab fa-telegram"></i>
+        </a>
+        <a href="https://wa.me/yournumber" class="social-link">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </div>
+      <p>Email: wantoirwan778@gmail.com</p>
+    </section>
+
+    <footer>
+      <div class="footer-links">
+        <a href="#">Terms & Conditions</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Contact</a>
+        <a href="#">FAQ</a>
+      </div>
+      <div class="copyright">© 2023 CodeBot. All rights reserved.</div>
+    </footer>
+  </div>
 
   <script>
-    // Simple count-up animation for stats
-    const counters = document.querySelectorAll('.counter');
-    counters.forEach(counter => {
-      const updateCount = () => {
-        const target = +counter.getAttribute('data-target');
-        const count = +counter.innerText;
-        const speed = 200; 
-        const increment = Math.ceil(target / speed);
-        if (count < target) {
-          counter.innerText = count + increment;
-          setTimeout(updateCount, 30);
-        } else {
-          counter.innerText = target;
+    // Data produk dengan harga
+    const products = {
+      'Build Web': { price: 80, originalPrice: 120 },
+      'Auto Trading': { price: 80, originalPrice: 90 },
+      'Auto Claim Faucet': { price: 70, originalPrice: 100 }
+    };
+    
+    // Data penjualan (nilai acak antara 100-200)
+    let salesData = {
+      buildweb: Math.floor(Math.random() * 101) + 100,
+      autotrade: Math.floor(Math.random() * 101) + 100,
+      autoclaim: Math.floor(Math.random() * 101) + 100
+    };
+    
+    // Harga crypto (akan diupdate via API)
+    let cryptoPrices = {
+      bitcoin: 0,
+      litecoin: 0,
+      dogecoin: 0,
+      ethereum: 0
+    };
+    
+    // Simpan data penjualan di localStorage jika tersedia
+    function saveSalesData() {
+      if (typeof(Storage) !== "undefined") {
+        localStorage.setItem('codebotSales', JSON.stringify(salesData));
+      }
+    }
+    
+    // Muat data penjualan dari localStorage
+    function loadSalesData() {
+      if (typeof(Storage) !== "undefined") {
+        const savedData = localStorage.getItem('codebotSales');
+        if (savedData) {
+          salesData = JSON.parse(savedData);
+          updateSalesBadges();
         }
+      }
+    }
+    
+    // Perbarui tampilan badge penjualan
+    function updateSalesBadges() {
+      document.getElementById('buildweb-sold').textContent = salesData.buildweb;
+      document.getElementById('autotrade-sold').textContent = salesData.autotrade;
+      document.getElementById('autoclaim-sold').textContent = salesData.autoclaim;
+    }
+    
+    // Dapatkan harga crypto dari API
+    async function fetchCryptoPrices() {
+      try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,litecoin,dogecoin,ethereum&vs_currencies=usd');
+        const data = await response.json();
+        
+        cryptoPrices.bitcoin = data.bitcoin.usd;
+        cryptoPrices.litecoin = data.litecoin.usd;
+        cryptoPrices.dogecoin = data.dogecoin.usd;
+        cryptoPrices.ethereum = data.ethereum.usd;
+        
+        // Jika modal terbuka, update perhitungan
+        if (document.getElementById('paymentModal').style.display === 'flex') {
+          updateCryptoCalculations(currentPrice);
+        }
+      } catch (error) {
+        console.error('Error fetching crypto prices:', error);
+        // Fallback prices jika API tidak tersedia
+        cryptoPrices.bitcoin = 30000;
+        cryptoPrices.litecoin = 70;
+        cryptoPrices.dogecoin = 0.07;
+        cryptoPrices.ethereum = 1800;
+      }
+    }
+    
+    // Modal pembayaran
+    let currentProduct = '';
+    let currentPrice = 0;
+    
+    function showPaymentModal(product, price) {
+      currentProduct = product;
+      currentPrice = price;
+      document.getElementById('product-name').textContent = product;
+      document.getElementById('product-price').textContent = `$${price} USD`;
+      document.getElementById('paymentModal').style.display = 'flex';
+      
+      // Update perhitungan crypto
+      updateCryptoCalculations(price);
+    }
+    
+    function closeModal() {
+      document.getElementById('paymentModal').style.display = 'none';
+      // Reset pilihan pembayaran
+      const paymentOptions = document.querySelectorAll('input[name="payment"]');
+      paymentOptions.forEach(option => option.checked = false);
+      
+      const paymentDetails = document.querySelectorAll('.payment-details');
+      paymentDetails.forEach(detail => detail.style.display = 'none');
+    }
+    
+    function selectPayment(method) {
+      // Tampilkan detail pembayaran yang dipilih
+      const paymentDetails = document.querySelectorAll('.payment-details');
+      paymentDetails.forEach(detail => detail.style.display = 'none');
+      
+      document.getElementById(`${method}-details`).style.display = 'block';
+    }
+    
+    function updateCryptoCalculations(price) {
+      // Sembunyikan spinner ketika perhitungan selesai
+      const hideSpinner = (id) => {
+        const spinner = document.getElementById(id);
+        if (spinner) spinner.style.display = 'none';
       };
-      updateCount();
-    });
+      
+      if (cryptoPrices.bitcoin > 0) {
+        const btcAmount = price / cryptoPrices.bitcoin;
+        document.getElementById('bitcoin-amount').textContent = `Send: ${btcAmount.toFixed(8)} BTC`;
+        hideSpinner('btc-spinner');
+      }
+      
+      if (cryptoPrices.litecoin > 0) {
+        const ltcAmount = price / cryptoPrices.litecoin;
+        document.getElementById('litecoin-amount').textContent = `Send: ${ltcAmount.toFixed(6)} LTC`;
+        hideSpinner('ltc-spinner');
+      }
+      
+      if (cryptoPrices.dogecoin > 0) {
+        const dogeAmount = price / cryptoPrices.dogecoin;
+        document.getElementById('dogecoin-amount').textContent = `Send: ${dogeAmount.toFixed(2)} DOGE`;
+        hideSpinner('doge-spinner');
+      }
+      
+      if (cryptoPrices.ethereum > 0) {
+        const ethAmount = price / cryptoPrices.ethereum;
+        document.getElementById('ethereum-amount').textContent = `Send: ${ethAmount.toFixed(6)} ETH`;
+        hideSpinner('eth-spinner');
+      }
+    }
+    
+    function copyAddress(elementId) {
+      const address = document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(address).then(() => {
+        alert('Address successfully copied!');
+      });
+    }
+    
+    function completePayment() {
+      // Tambahkan penjualan
+      if (currentProduct === 'Build Web') {
+        salesData.buildweb++;
+      } else if (currentProduct === 'Auto Trading') {
+        salesData.autotrade++;
+      } else if (currentProduct === 'Auto Claim Faucet') {
+        salesData.autoclaim++;
+      }
+      
+      saveSalesData();
+      updateSalesBadges();
+      
+      alert('Thank you! Please confirm your payment by sending proof of transfer to wantoirwan778@gmail.com. The product will be sent after the payment is confirmed.');
+      closeModal();
+    }
+    
+    // Fungsi lainnya
+    function handleTry() {
+      alert('Thank you! Your free trial account has been activated. Check your email for login instructions.');
+    }
+    
+    function handleDemo() {
+      alert('Thank you! Our team will contact you to schedule a demo at your desired time.');
+    }
+    
+    function handleBundle() {
+      alert('The bundle package gives you access to all products with a 20% discount. You will be redirected to the checkout page.');
+    }
+    
+    function demo(product) {
+      alert(`Demo for: ${product}\nOur team will show you the full features and capabilities of this product.`);
+    }
+    
+    // Muat data dan harga crypto saat halaman dimuat
+    window.onload = function() {
+      loadSalesData();
+      fetchCryptoPrices();
+      
+      // Update harga crypto setiap 60 detik
+      setInterval(fetchCryptoPrices, 60000);
+    };
   </script>
 </body>
 </html>
